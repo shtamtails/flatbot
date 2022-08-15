@@ -1,69 +1,39 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const https = require("https");
-const zlib = require("zlib");
-const options = {
-    headers: {
-        Accept: "application/json",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "en-US,en;q=0.9,ru;q=0.8,fr;q=0.7",
-        "Cache-Control": "no-cache",
-        Cookie: "fullscreen_cookie=1",
-        Dnt: "1",
-        Pragma: "no-cache",
-        Referer: "https://www.kufar.by/listings",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-Fetch-User": "?1",
-        "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
-    },
-};
-https.get("https://www.kufar.by/l/r~minsk?ot=1&query=%D0%9D%D0%B0%D1%83%D1%88%D0%BD%D0%B8%D0%BA%D0%B8+Marshall+", options, (res) => {
-    let data = [];
-    const gunzip = zlib.createGunzip();
-    res.pipe(gunzip);
-    let buffer = [];
-    gunzip
-        .on("data", function (data) {
-        // decompression chunk ready, add it to the buffer
-        buffer.push(data.toString());
-    })
-        .on("end", function () {
-        // response and decompression complete, join the buffer and return
-        const result = buffer.join("");
-        const startPoint = result.indexOf(`<script id="__NEXT_DATA__" type="application/json">`);
-        const data = result.slice(startPoint);
-        const endPoint = data.indexOf(`</script>`);
-        const finalData = data.slice(51, endPoint);
-        const test = JSON.parse(finalData);
-        const listings = test.props.initialState.listing.ads;
-        listings.map((listing) => {
-            console.log(listing);
-            // const images = listing.images;
-            // const account = listing.account_parameters;
-            // const priceBYN = listing.price_byn;
-            // const priceUSD = listing.price_usd;
-            // const adName = listing.subject;
-            // const adLink = listing.ad_link;
-            // console.log(`================================================`);
-            // console.log(`Name: ${adName}`);
-            // console.log(`Link: ${adLink}`);
-            // account.map((info) => {
-            //   console.log(`${info.pl}: ${info.v}`);
-            // });
-            // console.log(`Images:`);
-            // images.map((image) => {
-            //   const imgserver = image.id.slice(0, 2);
-            //   console.log(`https://yams.kufar.by/api/v1/kufar-ads/images/${imgserver}/${image.id}.jpg?rule=gallery`);
-            // });
-            // console.log(`BYN: ${priceBYN}`);
-            // console.log(`USD: ${priceUSD}`);
-            // console.log(`================================================`);
-        });
-    })
-        .on("error", (e) => {
-        console.error(e);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
+};
+import axios from "axios";
+import { Telegraf } from "telegraf";
+import { getKufar, kufarSender } from "./kufar.js";
+// import { createRequire } from "module";
+// const require = createRequire(import.meta.url);
+const token = "5790673136:AAG0zgux590LTLHsoykh5cV4CmRFnAFbNFQ";
+const getOnliner = () => __awaiter(void 0, void 0, void 0, function* () {
+    const link = `https://r.onliner.by/sdapi/ak.api/search/apartments?rent_type%5B%5D=2_rooms&price%5Bmin%5D=50&price%5Bmax%5D=300&currency=usd&only_owner=true&metro%5B%5D=red_line&metro%5B%5D=blue_line&metro%5B%5D=green_line&order=created_at%3Adesc&page=1&bounds%5Blb%5D%5Blat%5D=53.601382818288315&bounds%5Blb%5D%5Blong%5D=27.267348326485553&bounds%5Brt%5D%5Blat%5D=54.162092881927016&bounds%5Brt%5D%5Blong%5D=27.787728312241224&v=0.0077120208077992025`;
+    const page = yield axios.get(link);
+    const data = page.data;
 });
+const bot = new Telegraf(token);
+bot.start((ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    let lastKufar = yield getKufar();
+    yield kufarSender(ctx, lastKufar);
+    setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+        let newKufar = yield getKufar();
+        newKufar[0].time !== lastKufar[0].time && (lastKufar = newKufar);
+        if (newKufar[0].time !== lastKufar[0].time) {
+            lastKufar = newKufar;
+            yield kufarSender(ctx, newKufar);
+        }
+        else {
+            yield ctx.reply(`no new objects:(`);
+        }
+    }), 10000);
+}));
+bot.launch();
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
