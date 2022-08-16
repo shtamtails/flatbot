@@ -52,7 +52,7 @@ export class Kufar {
           : `https://cache1.kufar.by/gallery/${path}/${id}.jpg`;
         const result = {
           media: link,
-          type: "document",
+          type: "photo",
         };
         return result;
       });
