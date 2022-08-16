@@ -17,6 +17,10 @@ bot.start(async (ctx) => {
   setAdListener(ctx, onliner.get, onliner.send);
 });
 
+bot.hears("up?", (ctx) => {
+  ctx.reply("Yes, i'm stil up");
+});
+
 bot.launch();
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
