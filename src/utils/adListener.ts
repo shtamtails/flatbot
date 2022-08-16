@@ -3,6 +3,7 @@ import { Update } from "telegraf/typings/core/types/typegram";
 import { IListing } from "../models/IListing";
 
 export const setAdListener = async (ctx: Context<Update>, get: Function, send: Function) => {
+  console.log("up");
   let lastAd: IListing[] = await get();
   await send(ctx, lastAd);
   setInterval(async () => {
