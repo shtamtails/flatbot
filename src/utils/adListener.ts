@@ -12,5 +12,5 @@ export const setAdListener = async (ctx: Context<Update>, get: Function, send: F
       await send(ctx, newAd);
     } else {
     }
-  }, 60000);
+  }, 300000);
 };

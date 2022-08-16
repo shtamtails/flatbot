@@ -8,7 +8,7 @@ export class Kufar {
       "https://re.kufar.by/l/minsk/snyat/kvartiru-dolgosrochno/2k/bez-posrednikov?cur=USD&mee=v.or%3A2%2C5%2C32%2C12%2C16%2C20%2C23%2C27%2C28%2C24%2C21%2C17%2C13%2C9%2C6%2C3%2C4%2C7%2C10%2C14%2C18%2C22%2C25%2C29%2C30%2C26%2C33%2C19%2C15%2C11%2C8%2C31&oph=1&prc=r%3A0%2C300&size=30";
     // const page = await axios.get(link);
     const page = await axios.get(link).catch((e) => {
-      console.error(e);
+      console.error(e.statusMessage);
     });
 
     const parseDataJson = (page: AxiosResponse) => {
