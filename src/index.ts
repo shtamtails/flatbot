@@ -1,11 +1,9 @@
-import { Context, Telegraf } from "telegraf";
+import { Context, Markup, Telegraf } from "telegraf";
 import { Kufar } from "./kufar.js";
 import { Onliner } from "./onliner.js";
 import * as dotenv from "dotenv";
-import { setAdListener } from "./utils/adListener.js";
 import { Update } from "telegraf/typings/core/types/typegram.js";
-import axios from "axios";
-import { IListing } from "./models/IListing.js";
+import { setAdListener } from "./utils/adListener.js";
 dotenv.config();
 
 const kufar = new Kufar();
@@ -13,8 +11,23 @@ const onliner = new Onliner();
 const bot: Telegraf<Context<Update>> = new Telegraf(process.env.TOKEN!);
 
 bot.start(async (ctx) => {
-  setAdListener(ctx, kufar.get, kufar.send);
-  setAdListener(ctx, onliner.get, onliner.send);
+  return await ctx.reply(
+    "Select option",
+    Markup.keyboard([["🔍 Subscribe", "😞 Unsubscribe"]])
+      .oneTime()
+      .resize()
+  );
+});
+
+bot.hears("🔍 Subscribe", async (ctx) => {
+  ctx.reply("Subscribed to Kufar and Onliner!");
+  const schedule = "*/5 * * * *";
+  setAdListener(ctx, kufar.get, kufar.send, schedule);
+  setAdListener(ctx, onliner.get, onliner.send, schedule);
+});
+
+bot.hears("😞 Unsubscribe", (ctx) => {
+  ctx.reply("Uhh, sorry, not working yet...");
 });
 
 bot.hears("up?", (ctx) => {
