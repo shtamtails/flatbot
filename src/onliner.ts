@@ -11,11 +11,11 @@ export class Onliner {
     });
     const data: IONLINER.Apartment[] = page?.data.apartments;
     const convertedListings = data.map((listing) => {
-      const time: string = new Date(listing.created_at).toLocaleString("en-US");
+      const time: string = new Date(listing.created_at).toLocaleString("ru-RU", { timeZone: "Europe/Minsk" });
       const link: string = listing.url;
       const priceBYN: string = String(listing.price.converted.BYN.amount);
       const priceUSD: string = String(listing.price.converted.USD.amount);
-      const name: string = "Имя не указано";
+      const name: string = "не указано";
       const address: string = listing.location.address;
       const image: string = listing.photo;
       return {

@@ -24,7 +24,7 @@ export class Kufar {
     const listings: IKUFAR.Listing[] = page ? parseDataJson(page) : undefined;
 
     const convertedListings = listings.map((listing) => {
-      const time = new Date(listing.list_time).toLocaleString("en-US", { timeZone: "Europe/Minsk" });
+      const time = new Date(listing.list_time).toLocaleString("ru-RU", { timeZone: "Europe/Minsk" });
       const link = listing.ad_link;
       const priceUSD = (Number(listing.price_usd) / 100).toFixed(2);
       const priceBYN = (Number(listing.price_byn) / 100).toFixed(2);
