@@ -10,8 +10,6 @@ export const setAdListener = async (ctx: Context<Update>, get: Function, send: F
     if (newAd[0].time !== lastAd[0].time) {
       lastAd = newAd;
       await send(ctx, newAd);
-    } else {
-      ctx.reply("im still alive!");
     }
   }, 60000);
 };
