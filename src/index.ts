@@ -4,6 +4,7 @@ import { Onliner } from "./onliner.js";
 import * as dotenv from "dotenv";
 import { Update } from "telegraf/typings/core/types/typegram.js";
 import { setAdListener } from "./utils/adListener.js";
+import axios from "axios";
 dotenv.config();
 
 const kufar = new Kufar();

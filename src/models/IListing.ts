@@ -7,4 +7,7 @@ export interface IListing {
   address: string;
   images?: IKUFAR.Image[];
   image?: string;
+  number?: { phone: string };
+  ad_id: number;
+  phone_hidden: boolean;
 }

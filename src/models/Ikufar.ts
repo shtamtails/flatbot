@@ -6,6 +6,7 @@ declare module IKUFAR {
   export interface Listing {
     account_id: number;
     account_parameters: Account[];
+    ad_id: number;
     ad_link: string;
     currency: string;
     images: Image[];

@@ -8,7 +8,7 @@ const cron = require("node-cron");
 export const setAdListener = async (ctx: Context<Update>, get: Function, send: Function, schedule: string) => {
   let lastAd: IListing[] = await get();
   await send(ctx, lastAd);
-  const listener = cron.schedule(schedule, async () => {
+  cron.schedule(schedule, async () => {
     let newAd: IListing[] = await get();
     if (newAd[0].time !== lastAd[0].time) {
       lastAd = newAd;

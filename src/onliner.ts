@@ -36,7 +36,7 @@ export class Onliner {
     await ctx.reply(
       `
 📆 Добавлено: ${item[0].time}
-💵 Цена: ${item[0].priceBYN} BYN или ${item[0].priceUSD} USD
+💵 Цена: ${item[0].priceUSD} USD или ${item[0].priceBYN} BYN
 👤 Имя: ${item[0].name}
 🏠 Адрес: ${item[0].address}
       `,
